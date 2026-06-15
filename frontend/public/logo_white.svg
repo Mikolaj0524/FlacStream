@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="100" viewBox="0 0 180 100">
+    <text x="50%" y="55%" text-anchor="middle" font-family="Arial, sans-serif" font-size="44" font-weight="700" fill="white" letter-spacing="3">
+        FLAC
+    </text>
+    <text x="50%" y="80%" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="500" fill="white" letter-spacing="6" >
+        STREAM
+    </text>
+    <path d="M175 5 H155 M175 5 V25" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" />
+    <path d="M5 95 V75 M5 95 H25" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" />
+</svg>
