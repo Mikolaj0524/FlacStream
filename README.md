@@ -1,5 +1,7 @@
-# <div align="center">🎵 FlacStream</div>
-
+# <div hidden> FlacStream</div>
+<p align="center">
+  <img src="https://github.com/Mikolaj0524/FlacStream/blob/main/frontend/public/logo_purple.svg?raw=true" alt="FlacStream Logo">
+</p>
 <div align="center">
 
 ### Stream your music collection in **FLAC Lossless Quality**
