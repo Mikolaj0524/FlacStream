@@ -81,6 +81,12 @@ export default function Player() {
     };
 
     const prevTrack = () => {
+        const currentTime = audioRef.current?.currentTime ?? 0;
+        if(currentTime >= 5){
+            audioRef.current.currentTime = 0;
+            return;
+        }
+
         const index = songs.findIndex(s => s.id === currentlyPlaying.id);
         const prev = songs[index - 1];
 
