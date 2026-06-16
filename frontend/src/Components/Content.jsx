@@ -6,7 +6,7 @@ export default function Content(){
     const {songs, search} = useApp();
 
     return(
-        <main className="flex-1 overflow-y-auto px-5 md:px-8">
+        <main className="flex-1 overflow-y-auto px-3">
             {songs == null ? (
                 <Loader />
             ) : (

@@ -109,8 +109,8 @@ export default function Player() {
     }, []);
 
     return (
-        <div className="flex items-center justify-center md:px-8">
-            <div className="bg-zinc-900 border-zinc-700 hover:border-violet-600 flex flex-col md:flex-row items-start md:items-center justify-center gap-3 md:gap-15 p-4 border-t w-full max-w-6xl md:rounded-md transition-all duration-200 text-white py-4 mt-5 md:my-8">
+        <div className="flex items-center justify-center md:px-3">
+            <div className="bg-zinc-900 border-zinc-700 hover:border-violet-600 flex flex-col md:flex-row items-start md:items-center justify-center gap-3 md:gap-15 border-t w-full max-w-6xl md:rounded-xl transition-all duration-200 text-white p-1 md:p-2 xl:p-4 mt-5 md:my-2 lg:my-3 xl:my-10">
                 <audio ref={audioRef} className="hidden" onTimeUpdate={handleTime} onEnded={handleEnd}  />
                 <div className="flex gap-4 items-center justify-start">
                     <img src={currentlyPlaying.cover ?? "unknown.svg"} alt="Song cover" className="size-13 object-cover rounded" />

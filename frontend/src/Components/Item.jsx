@@ -7,7 +7,7 @@ export default function Item({song}){
     const current = currentlyPlaying === song;
 
     return(
-        <div className="flex items-center gap-4 max-w-6xl mx-auto p-2 my-2 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-violet-500 hover:bg-zinc-800/60 transition-all duration-200 cursor-pointer" onClick={() => {if(!current) PlaySong(song);}}>
+        <div className="flex items-center gap-4 max-w-6xl mx-auto my-2 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-violet-500 hover:bg-zinc-800/60 transition-all duration-300 cursor-pointer p-1 xl:p-2" onClick={() => {if(!current) PlaySong(song);}}>
             <img src={song.cover ?? "unknown.svg"} alt="song cover" className="size-12 m-1 rounded-sm" />
             <div className="flex flex-col items-start justify-center flex-1">
                 <div className={`font-bold ${current && "text-violet-500"}`}>{song.title}</div>
