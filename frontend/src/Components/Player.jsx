@@ -116,7 +116,7 @@ export default function Player() {
 
     return (
         <div className="flex items-center justify-center md:px-3">
-            <div className="bg-zinc-900 border-zinc-700 hover:border-violet-600 flex flex-col md:flex-row items-start md:items-center justify-center gap-3 md:gap-15 border-t w-full max-w-6xl md:rounded-xl transition-all duration-200 text-white p-1 md:p-2 xl:p-4 mt-5 md:my-2 lg:my-3 xl:my-10">
+            <div className="bg-zinc-900/80 border-zinc-700 hover:border-violet-600 flex flex-col md:flex-row items-start md:items-center justify-center gap-3 md:gap-15 border-t w-full max-w-6xl md:rounded-xl transition-all duration-200 text-white p-1 md:p-2 xl:p-4 mt-5 md:my-2 lg:my-3 xl:my-10">
                 <audio ref={audioRef} className="hidden" onTimeUpdate={handleTime} onEnded={handleEnd}  />
                 <div className="flex gap-4 items-center justify-start">
                     <img src={currentlyPlaying.cover ?? "unknown.svg"} alt="Song cover" className="size-13 object-cover rounded" />
@@ -128,13 +128,13 @@ export default function Player() {
                 <div className="flex gap-2.5 flex-1 flex-col w-full md:w-auto md:flex-row-reverse items-center justify-center">
                     <div className="flex gap-4 px-4 items-center justify-center">
                         {/* PREV */}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 bg-zinc-900 text-zinc-400 hover:text-white transition" alt="Previous song" onClick={() => prevTrack()}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 text-zinc-400 hover:text-white transition" alt="Previous song" onClick={() => prevTrack()}>
                             <rect x="5" y="4" width="2" height="12" fill="currentColor" />
                             <path d="M16 4 L8 10 L16 16 Z" fill="currentColor" stroke="currentColor" strokeLinejoin="round" />
                         </svg>
 
                         {/* PLAY / PAUSE */}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 bg-zinc-900 text-zinc-400 hover:text-white transition" alt="play/pause" onClick={() => setPlaying(!playing)} >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 text-zinc-400 hover:text-white transition" alt="play/pause" onClick={() => setPlaying(!playing)} >
                             {playing ? (
                                 <>
                                     <rect x="6" y="4" width="3" height="12" rx="1" fill="currentColor" className="hover:fill-white" />
@@ -146,7 +146,7 @@ export default function Player() {
                         </svg>
 
                         {/* NEXT */}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 bg-zinc-900 text-zinc-400 hover:text-white transition" alt="Next song" onClick={() => nextTrack()}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 text-zinc-400 hover:text-white transition" alt="Next song" onClick={() => nextTrack()}>
                             <path d="M4 4 L12 10 L4 16 Z" fill="currentColor" stroke="currentColor" strokeLinejoin="round" />
                             <rect x="13" y="4" width="2" height="12" fill="currentColor" />
                         </svg>
@@ -166,7 +166,7 @@ export default function Player() {
                             onMouseUp={() => setIsDragging(false)} 
                             onMouseLeave={() => setIsDragging(false)}
                         >
-                            <div className="bg-violet-600 h-full transition-all duration-100" style={{width:`${time / currentlyPlaying.length * 100}%`}}></div>
+                            <div className="bg-violet-600 h-full transition-all duration-100 rounded-full" style={{width:`${time / currentlyPlaying.length * 100}%`}}></div>
                         </div>
                         <div className="text-neutral-400 text-xs">{TimeToString(currentlyPlaying.length)}</div>
                     </div>
