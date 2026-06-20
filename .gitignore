@@ -13,9 +13,7 @@ lerna-debug.log*
 
 *.local
 
-/backend/covers
-/backend/music
-/backend/cache.json
+/backend/data
 
 .vscode/*
 !.vscode/extensions.json

@@ -8,13 +8,47 @@ export function AppProvider({children}){
     const [time, setTime] = useState(0);
     const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
     const [songs, setSongs] = useState(null);
+    const [key, setKey] = useState("");
+    const [validated, setValidated] = useState(false);
+    const [checked, setChecked] = useState(false);
 
     useEffect(()=>{
-        fetch("/songs")
+        fetch("/check", {
+            method: "GET",
+            credentials: "include"
+        })
+        .then(res =>{
+            if(res.status == 200){
+                setValidated(true);
+            }
+            setChecked(true);
+        });
+    }, []);
+
+    useEffect(()=>{
+        if(!validated){
+            fetch("/login", {
+                method: "POST",
+                credentials: "include",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({key: key})
+            })
+            .then(res => {
+                if(res.status == 200)
+                    setValidated(true);
+            });
+        }
+    }, [key]);
+
+    useEffect(()=>{
+        if(!validated)
+            return;
+
+        fetch("/songs", {credentials: "include"})
         .then(res => res.json())
         .then(res => setSongs(res))
         .catch(e => setSongs([]));
-    }, [])
+    }, [validated])
 
     const PlaySong = song => {
         setPlaying(false);
@@ -38,13 +72,15 @@ export function AppProvider({children}){
         setPlaying,
         currentlyPlaying,
         songs,
-        setSongs,
         PlaySong,
         TimeToString,
         time, 
         setTime,
         search,
-        setSearch
+        setSearch,
+        validated,
+        setKey,
+        checked
     };
     
     return(

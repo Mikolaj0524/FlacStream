@@ -6,6 +6,20 @@ export default function Player() {
     const [isDragging, setIsDragging] = useState(false);
     const audioRef = useRef(null);
 
+    const updateAudio = () => {
+        if(!audioRef.current)
+            return;
+
+        const audio = audioRef.current;
+        const url = `/stream/${encodeURIComponent(currentlyPlaying.id)}`;
+
+        audio.src = url;
+        audio.currentTime = time;
+
+        if (playing)
+            audio.play();
+    }
+
     useEffect(() => {
         if (!("mediaSession" in navigator)) 
             return;
@@ -17,20 +31,10 @@ export default function Player() {
     }, [songs, currentlyPlaying]);
 
     useEffect(() => {
-        if (!currentlyPlaying || !audioRef.current) 
+        if (!audioRef.current) 
             return;
-
-        const audio = audioRef.current;
-        const src = `/stream/${encodeURIComponent(currentlyPlaying.id)}`;
-
-        if (audio.src == src) 
-            return;
-
-        audio.src = src;
-        audio.load();
-
-        if (playing)
-            audio.play();
+        
+        updateAudio();
     }, [currentlyPlaying]);
 
     useEffect(() => {
@@ -50,7 +54,7 @@ export default function Player() {
 
     const changeTime = e => {
         const audio = audioRef.current;
-        if (!audio || !currentlyPlaying || !currentlyPlaying.length) 
+        if (!audio || !currentlyPlaying.length) 
             return;
 
         const rect = e.currentTarget.getBoundingClientRect();
@@ -99,25 +103,25 @@ export default function Player() {
                 PlaySong(s);
         }
     };
-
-    const handleEnd = () => {
-        nextTrack();
-    }
-
+    
     useEffect(() => {
         const keyDown = e => {
             if (e.code === "Space")
                 setPlaying(prev => !prev);
         };
-
+        
         window.addEventListener("keydown", keyDown);
         return () => window.removeEventListener("keydown", keyDown);
     }, []);
+    
+    
+    const handleEnd = () => nextTrack();
+    const handleError = () => {};
 
     return (
         <div className="flex items-center justify-center md:px-3">
-            <div className="bg-zinc-900/80 border-zinc-700 hover:border-violet-600 flex flex-col md:flex-row items-start md:items-center justify-center gap-3 md:gap-15 border-t w-full max-w-6xl md:rounded-xl transition-all duration-200 text-white p-1 md:p-2 xl:p-4 mt-5 md:my-2 lg:my-3 xl:my-10">
-                <audio ref={audioRef} className="hidden" onTimeUpdate={handleTime} onEnded={handleEnd}  />
+            <div className="border-zinc-800 bg-zinc-900/20 hover:border-violet-600 flex flex-col md:flex-row items-start md:items-center justify-center gap-3 md:gap-15 border-t md:border w-full max-w-6xl md:rounded-xl transition-all duration-200 text-white p-3 md:p-2 xl:p-4 mt-6 md:my-6">
+                <audio ref={audioRef} className="hidden" onTimeUpdate={handleTime} onEnded={handleEnd} onError={handleError}  />
                 <div className="flex gap-4 items-center justify-start">
                     <img src={currentlyPlaying.cover ?? "unknown.svg"} alt="Song cover" className="size-13 object-cover rounded" />
                     <div className="flex flex-col justify-center">

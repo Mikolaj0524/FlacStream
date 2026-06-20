@@ -1,13 +1,19 @@
 import Item from "./Item";
 import Empty from "./Empty";
 
-export default function Items({songs, search}){
-    if (!Array.isArray(songs)) 
+export default function Items({songs, search, setCenter}){
+    if (!Array.isArray(songs)){
+        setCenter(true);
         return <Empty />;
+    }
 
     const matched = songs.filter(song => match(song, search));
-    if (matched.length === 0)
+    if (matched.length === 0){
+        setCenter(true);
         return <Empty />;
+    }
+
+    setCenter(false);
 
     return (
         <>

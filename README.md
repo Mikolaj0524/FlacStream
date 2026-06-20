@@ -29,17 +29,43 @@
 ## <div align="center">✨ Features</div>
 
 <p align="center">
-🎵 <b>Lossless FLAC Streaming</b><br>
-⚡ <b>Fast HTTP Range Streaming</b><br>
-🎨 <b>Automatic Cover Art Extraction</b><br>
-📋 <b>Metadata Parsing & Caching</b><br>
-🔍 <b>Built-in Search System</b><br>
-💿 <b>Embedded Artwork Support</b><br>
-📱 <b>Responsive Modern UI</b><br>
-🚀 <b>Self Hosted</b><br>
-🌐 <b>Browser Based</b><br>
-🎧 <b>No Subscription Required</b>
+🎵 Lossless FLAC Streaming<br>
+⏩ Partial Audio Loading<br>
+⚡ Fast HTTP Range Streaming<br>
+🎨 Automatic Cover Art Extraction<br>
+📋 Metadata Parsing & Caching<br>
+🔍 Built-in Search System<br>
+💿 Embedded Artwork Support<br>
+📱 Responsive Modern UI<br>
+🚀 Self Hosted<br>
+🌐 Web Based<br>
+🎧 No Subscription Required
 </p>
+
+---
+
+## <div align="center">🔐 Authentication</div>
+
+<p align="center">
+🍪 Cookie-based authentication<br>
+🔒 Server-side session validation<br>
+🛡️ Protected API endpoints<br>
+🚫 Unauthorized requests are blocked<br>
+🔁 Persistent login between browser sessions
+</p>
+
+### <div align="center">backend/config.js:</div>
+
+<p align="center">Authentication with keys</p>
+
+```javascript
+export const AUTHENTICATION = ["secret_key1", "secret_key2", ...];
+```
+<p align="center">Disable authentication</p>
+
+```javascript
+export const AUTHENTICATION = null;
+```
 
 ---
 
@@ -59,6 +85,7 @@ React • Tailwind CSS • Vite • Node.js • Express.js
 ---
 
 ## <div align="center">🚀 Quick Start</div>
+<br>
 
 ### <div align="center">Clone the repository</div>
 
@@ -67,16 +94,31 @@ React • Tailwind CSS • Vite • Node.js • Express.js
 git clone https://github.com/Mikolaj0524/FlacStream.git
 cd FlacStream
 ```
+<br>
 
 ### <div align="center">Install dependencies</div>
 
 ```bash
 cd frontend
 npm install
-
-cd ../backend
-npm install
+cd ../
 ```
+
+```bash
+cd backend
+npm install
+cd ../
+```
+<br>
+
+### <div align="center">Build frontend</div>
+
+```bash
+cd frontend
+npm run build
+cd ../
+```
+<br>
 
 ### <div align="center">Start FlacStream</div>
 
@@ -89,7 +131,6 @@ That's it. 🎉
 
 The backend will automatically:
 
-* Build the frontend (if needed)
 * Scan your music library
 * Read FLAC metadata
 * Extract album covers
@@ -103,13 +144,13 @@ The backend will automatically:
 Place your `.flac` files inside:
 
 ```text
-backend/music
+backend/data/music/
 ```
 
 Example:
 
 ```text
-backend/music/
+backend/data/music/
 ├── Artist - Song.flac
 ├── Artist - Song 2.flac
 └── Album Track.flac
@@ -125,38 +166,123 @@ FlacStream will automatically detect them on startup.
 FlacStream/
 │
 ├── frontend/
+│   ├── public/
+│   │   ├── logo_gray.svg
+│   │   ├── logo_purple.svg
+│   │   ├── logo_white.svg
+│   │   ├── sort_rnd.svg
+│   │   └── unknown.svg
+│   │    
 │   ├── src/
-│   └── dist/
+│   │   ├── Components/
+│   │   │   ├── Content.jsx
+│   │   │   ├── Empty.jsx
+│   │   │   ├── Filter.jsx
+│   │   │   ├── Item.jsx
+│   │   │   ├── Items.jsx
+│   │   │   ├── Loader.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── Navigation.jsx
+│   │   │   ├── Player.jsx
+│   │   │   └── Search.jsx
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── AppContext.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │    
+│   └── index.html
 │
 ├── backend/
-│   ├── music/
-│   ├── covers/
-│   ├── cache.json
+│   ├── data/
+│   │   ├── covers/
+│   │   ├── music/
+│   │   └── cache.json
+│   │    
+│   ├── modules/
+│   │   ├── auth.js
+│   │   ├── cache.js
+│   │   └── sessions.js
+│   │    
+│   ├── routes/
+│   │   ├── check.js
+│   │   ├── covers.js
+│   │   ├── songs.js
+│   │   ├── stream.js
+│   │   └── login.js
+│   │    
+│   ├── utils/
+│   │   └── paths.js
+│   │    
+│   ├── config.js
 │   └── index.js
-│
-└── preview/
 ```
 
 ---
 
 ## <div align="center">🌐 API</div>
 
-### <div align="center">Get Song List</div>
+### <div align="center">Login</div>
+
+```http
+POST /login
+
+Response type: [status code (ok=200, unauthorized=401)]
+
+fetch("/login", {
+    method: "POST",
+    credentials: "include",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({key: "<put-your-secret-here>"})
+});
+```
+
+<br>
+
+<p align="middle">
+   Endpoints under this message are protected by cookies.
+</p>
+
+### <div align="center">Song List</div>
 
 ```http
 GET /songs
+
+Response type: [json]
+
+fetch("/songs", {
+  credentials: "include"
+});
 ```
 
 ### <div align="center">Stream Audio</div>
 
 ```http
-GET /stream/{song.flac}
+GET /stream/{song.flac}         
+
+Response type: [audio/flac stream]
+Supports HTTP Range requests
 ```
 
-### <div align="center">Get Cover Artwork</div>
+### <div align="center">Cover Artwork</div>
 
 ```http
 GET /covers/{cover-file}
+
+Response type: [image]
+```
+
+### <div align="center">Check Cookie</div>
+
+```http
+GET /check
+
+Response type: [status code (ok=200, unauthorized=401)]
+
+fetch("/check", {
+    method: "GET",
+    credentials: "include"
+});
 ```
 
 ---
