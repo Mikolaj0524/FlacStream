@@ -11,7 +11,7 @@ export default function Content(){
     return(
         <main className={`flex-1 overflow-y-auto px-3 ${(songs == null || center) && "flex items-center justify-center"}`}>
             {(validated || !checked) ? (
-                songs == null ? <Loader /> : <Items songs={songs} search={search} setCenter={setCenter} />
+                songs == null ? <Loader /> : <Items songs={songs} search={search} center={center} setCenter={setCenter} />
             ) : <Login /> }
         </main>
     );

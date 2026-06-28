@@ -72,6 +72,7 @@ export function AppProvider({children}){
         setPlaying,
         currentlyPlaying,
         songs,
+        setSongs,
         PlaySong,
         TimeToString,
         time, 

@@ -1,15 +1,20 @@
 import { useApp } from "../AppContext";
 
 export default function Filter() {
-    const {songs, setSongs} = useApp();
+    const {songs, setSongs, PlaySong} = useApp();
 
     const handleClick = () => {
+        if (!Array.isArray(songs))
+            return;
+
         const shuffled = [...songs];
         for (let i = shuffled.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
         setSongs(shuffled);
+
+        PlaySong(shuffled[0]);
     };
 
     return (
