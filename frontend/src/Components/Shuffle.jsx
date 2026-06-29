@@ -1,6 +1,6 @@
 import { useApp } from "../AppContext";
 
-export default function Filter() {
+export default function Shuffle() {
     const {songs, setSongs, PlaySong} = useApp();
 
     const handleClick = () => {

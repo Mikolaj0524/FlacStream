@@ -4,7 +4,9 @@ import { useApp } from "../AppContext";
 export default function Player() {
     const {playing, setPlaying, currentlyPlaying, PlaySong, time, setTime, TimeToString, songs} = useApp();
     const [isDragging, setIsDragging] = useState(false);
+
     const audioRef = useRef(null);
+    const barRef = useRef(null);
 
     const updateAudio = () => {
         if(!audioRef.current)
@@ -16,7 +18,7 @@ export default function Player() {
         audio.src = url;
         audio.currentTime = time;
 
-        if (playing)
+        if (playing) 
             audio.play();
     }
 
@@ -42,33 +44,33 @@ export default function Player() {
         if (!audio || !audio.src) 
             return;
 
-        if (playing) {
-            if (audio.paused)
+        if (playing){
+            if (audio.paused) 
                 audio.play();
         } 
         else {
-            if (!audio.paused)
+            if (!audio.paused) 
                 audio.pause();
         }
     }, [playing]);
 
-    const changeTime = e => {
+    const changeTime = clientX => {
         const audio = audioRef.current;
-        if (!audio || !currentlyPlaying.length) 
+        if (!audio || !currentlyPlaying.length || !barRef.current) 
             return;
 
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
+        const rect = barRef.current.getBoundingClientRect();
+        const x = clientX - rect.left;
         
         const newTime = Math.min(Math.max(x / rect.width, 0), 1) * currentlyPlaying.length;
 
         audio.currentTime = newTime;
-        setTime(Math.round(newTime));
+        setTime(newTime);
     };
 
     const handleTime = () => {
         if (!isDragging && audioRef.current)
-            setTime(Math.round(audioRef.current.currentTime));
+            setTime(audioRef.current.currentTime);
     };
 
     const nextTrack = () => {
@@ -113,15 +115,27 @@ export default function Player() {
         window.addEventListener("keydown", keyDown);
         return () => window.removeEventListener("keydown", keyDown);
     }, []);
-    
-    
-    const handleEnd = () => nextTrack();
-    const handleError = () => {};
+
+    useEffect(() => {
+        if (!isDragging) 
+            return;
+
+        const handleMove = e => changeTime(e.clientX);
+        const handleUp = () => setIsDragging(false);
+
+        window.addEventListener("mousemove", handleMove);
+        window.addEventListener("mouseup", handleUp);
+
+        return () => {
+            window.removeEventListener("mousemove", handleMove);
+            window.removeEventListener("mouseup", handleUp);
+        };
+    }, [isDragging, currentlyPlaying]);
 
     return (
         <div className="flex items-center justify-center md:px-3">
             <div className="border-zinc-800 bg-zinc-900/20 hover:border-violet-600 flex flex-col md:flex-row items-start md:items-center justify-center gap-3 md:gap-15 border-t md:border w-full max-w-6xl md:rounded-xl transition-all duration-200 text-white p-3 md:p-2 xl:p-4 mt-6 md:my-6">
-                <audio ref={audioRef} className="hidden" onTimeUpdate={handleTime} onEnded={handleEnd} onError={handleError}  />
+                <audio ref={audioRef} className="hidden" onTimeUpdate={handleTime} onEnded={nextTrack} />
                 <div className="flex gap-4 items-center justify-start">
                     <img src={currentlyPlaying.cover ?? "unknown.svg"} alt="Song cover" className="size-13 object-cover rounded" />
                     <div className="flex flex-col justify-center">
@@ -156,21 +170,15 @@ export default function Player() {
                         </svg>
                     </div>
                     <div className="flex items-center gap-4 w-full min-w-0">
-                        <div className="text-neutral-400 text-right text-xs">{TimeToString(time)}</div>
+                        <div className="text-neutral-400 text-right text-xs">{TimeToString(Math.round(time))}</div>
                         <div className="w-full h-1 rounded-full bg-zinc-600 transition-all cursor-pointer duration-200 overflow-hidden hover:h-3" 
+                            ref={barRef}
                             onMouseDown={e => {
                                 setIsDragging(true); 
-                                changeTime(e);
-                            }} 
-                            onMouseMove={e => {
-                                if (!isDragging)
-                                    return; 
-                                changeTime(e);
+                                changeTime(e.clientX);
                             }}
-                            onMouseUp={() => setIsDragging(false)} 
-                            onMouseLeave={() => setIsDragging(false)}
                         >
-                            <div className="bg-violet-600 h-full transition-all duration-100 rounded-full" style={{width:`${time / currentlyPlaying.length * 100}%`}}></div>
+                            <div className="bg-violet-600 h-full rounded-full" style={{width:`${time / currentlyPlaying.length * 100}%`}}></div>
                         </div>
                         <div className="text-neutral-400 text-xs">{TimeToString(currentlyPlaying.length)}</div>
                     </div>

@@ -16,7 +16,7 @@ export default function login(){
         const session = createSession();
         res.cookie("session", session, {
             httpOnly: true,
-            sameSite: "lax",
+            sameSite: "strict",
             secure: false,
             maxAge: 30 * 24 * 60 * 60 * 1000
         });

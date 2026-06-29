@@ -3,14 +3,15 @@ import { createContext, useContext, useEffect, useState } from "react";
 const AppContext = createContext();
 
 export function AppProvider({children}){
-    const [search, setSearch] = useState("");
-    const [playing, setPlaying] = useState(false);
-    const [time, setTime] = useState(0);
-    const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
-    const [songs, setSongs] = useState(null);
-    const [key, setKey] = useState("");
-    const [validated, setValidated] = useState(false);
     const [checked, setChecked] = useState(false);
+    const [validated, setValidated] = useState(false);
+
+    const [search, setSearch] = useState("");
+    const [songs, setSongs] = useState(null);
+
+    const [playing, setPlaying] = useState(false);
+    const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
+    const [time, setTime] = useState(0);
 
     useEffect(()=>{
         fetch("/check", {
@@ -18,27 +19,12 @@ export function AppProvider({children}){
             credentials: "include"
         })
         .then(res =>{
-            if(res.status == 200){
+            if(res.status == 200)
                 setValidated(true);
-            }
+
             setChecked(true);
         });
     }, []);
-
-    useEffect(()=>{
-        if(!validated){
-            fetch("/login", {
-                method: "POST",
-                credentials: "include",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({key: key})
-            })
-            .then(res => {
-                if(res.status == 200)
-                    setValidated(true);
-            });
-        }
-    }, [key]);
 
     useEffect(()=>{
         if(!validated)
@@ -70,17 +56,17 @@ export function AppProvider({children}){
     const values = {
         playing,
         setPlaying,
-        currentlyPlaying,
         songs,
         setSongs,
-        PlaySong,
-        TimeToString,
         time, 
         setTime,
+        TimeToString,
+        PlaySong,
+        currentlyPlaying,
         search,
         setSearch,
         validated,
-        setKey,
+        setValidated,
         checked
     };
     
