@@ -1,11 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import { useApp } from "../AppContext";
+import VolumeBar from "./VolumeBar";
+import PrevBtn from "./PrevBtn";
+import StateBtn from "./StateBtn";
+import NextBtn from "./NextBtn";
+import Progress from "./Progress";
 
 export default function Player() {
     const {playing, setPlaying, currentlyPlaying, PlaySong, time, setTime, TimeToString, songs} = useApp();
-
     const [dragging, setDragging] = useState(false);
-
     const audioRef = useRef(null);
 
     const updateAudio = () => {
@@ -125,183 +128,5 @@ export default function Player() {
                 </div>
             </div>
         </div>
-    );
-}
-
-function VolumeBar({audioRef}){
-    const [volumeDragging, setVolumeDragging] = useState(false);
-    const [over, setOver] = useState(false);
-    const [muted, setMuted] = useState(false);
-    const [volume, setVolume] = useState(1);
-
-    const volumeRef = useRef(null);
-
-    const toggleMute = () => {
-        if (!audioRef.current)
-            return;
-
-        const audio = audioRef.current;
-        audio.muted = !audio.muted;
-        audio.volume = audio.muted ? 0 : 1;
-
-        setMuted(audio.muted);
-        setVolume(audio.volume);
-    };    
-        
-    useEffect(() => {
-        if (!volumeDragging) 
-            return;
-
-        const handleMove = e => changeVolume(e.clientY);
-        const handleUp = () => setVolumeDragging(false);
-
-        window.addEventListener("mousemove", handleMove);
-        window.addEventListener("mouseup", handleUp);
-
-        return () => {
-            window.removeEventListener("mousemove", handleMove);
-            window.removeEventListener("mouseup", handleUp);
-        };
-    }, [volumeDragging]);
-
-    const changeVolume = clientY => {
-        const audio = audioRef.current;
-        if (!audio || !volumeRef.current) 
-            return;
-
-        const rect = volumeRef.current.getBoundingClientRect();
-
-        const y = clientY - rect.top;
-        const newVolume = Math.min(Math.max(1 - (y / rect.height), 0), 1);
-
-        audio.volume = newVolume;
-        setVolume(newVolume);
-
-        if(newVolume > 0){
-            setMuted(false);
-            audio.muted = false;
-        }
-        else{
-            setMuted(true);
-            audio.muted = true;
-        }
-    };
-
-    return(
-        <div className="relative z-20 hidden md:block" onMouseEnter={() => setOver(true)} onMouseLeave={() => setOver(false)}>
-            {over &&
-                <div className="h-35 pb-8 bottom-0 w-full absolute z-30">
-                    <div className="border-zinc-800 border bg-zinc-900 w-full h-full rounded-md p-2">
-                        <div className="h-full w-full bg-zinc-600 flex items-end align-middle rounded-full cursor-pointer"
-                            ref={volumeRef}
-                            onMouseDown={e => {
-                                setVolumeDragging(true); 
-                                changeVolume(e.clientY);
-                            }}
-                        >
-                            <div className="bg-violet-600 rounded-full flex-1" style={{height: `${volume * 100}%`}}></div>
-                        </div>
-                    </div>
-                </div>
-            }
-            <div className="relative z-40" onClick={toggleMute}>
-                {muted ? 
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 text-zinc-400 hover:text-white transition" alt="Muted">
-                        <path d="M4 8 H7 L12 4 V16 L7 12 H4 Z" fill="currentColor" stroke="currentColor" strokeLinejoin="round" />
-                        <path d="M14 8 L17 12 M17 8 L14 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                :
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 text-zinc-400 hover:text-white transition" alt="Volume">
-                        <path d="M4 8 H7 L12 4 V16 L7 12 H4 Z" fill="currentColor" stroke="currentColor" strokeLinejoin="round" />
-                        <path d="M14 7 C16 8.5 16 11.5 14 13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                }
-            </div>
-        </div>
-    );
-}
-
-function Progress({audioRef, dragging, setDragging}){
-    const {playing, currentlyPlaying, time, setTime, TimeToString} = useApp();
-
-    const barRef = useRef(null);
-
-    useEffect(() => {
-        if (!dragging) 
-            return;
-
-        const handleMove = e => changeTime(e.clientX);
-        const handleUp = () => setDragging(false);
-
-        window.addEventListener("mousemove", handleMove);
-        window.addEventListener("mouseup", handleUp);
-
-        return () => {
-            window.removeEventListener("mousemove", handleMove);
-            window.removeEventListener("mouseup", handleUp);
-        };
-    }, [dragging, currentlyPlaying]);
-
-    const changeTime = clientX => {
-        const audio = audioRef.current;
-        if (!audio || !currentlyPlaying.length || !barRef.current) 
-            return;
-
-        const rect = barRef.current.getBoundingClientRect();
-        const x = clientX - rect.left;
-        
-        const newTime = Math.min(Math.max(x / rect.width, 0), 1) * currentlyPlaying.length;
-
-        audio.currentTime = newTime;
-        setTime(newTime);
-    };
-
-    return(
-        <>
-            <div className="text-neutral-400 text-right text-xs">{TimeToString(Math.round(time))}</div>
-            <div className="w-full h-1 rounded-full bg-zinc-600 transition-all cursor-pointer duration-200 overflow-hidden hover:h-3" 
-                ref={barRef}
-                onMouseDown={e => {
-                    setDragging(true); 
-                    changeTime(e.clientX);
-                }}
-            >
-                <div className="bg-violet-600 h-full rounded-full" style={{width:`${time / currentlyPlaying.length * 100}%`}}></div>
-            </div>
-            <div className="text-neutral-400 text-xs">{TimeToString(currentlyPlaying.length)}</div>
-        </>
-    );
-}
-
-function PrevBtn({prevTrack}){
-    return(
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 text-zinc-400 hover:text-white transition" alt="Previous song" onClick={prevTrack}>
-            <rect x="5" y="4" width="2" height="12" fill="currentColor" />
-            <path d="M16 4 L8 10 L16 16 Z" fill="currentColor" stroke="currentColor" strokeLinejoin="round" />
-        </svg>
-    );
-}
-
-function StateBtn({playing, setPlaying}){
-    return(
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 text-zinc-400 hover:text-white transition" alt="play/pause" onClick={() => setPlaying(!playing)} >
-            {playing ? (
-                <>
-                    <rect x="6" y="4" width="3" height="12" rx="1" fill="currentColor" className="hover:fill-white" />
-                    <rect x="11" y="4" width="3" height="12" rx="1" fill="currentColor" />
-                </>
-            ):(
-                <path d="M6 4 L16 10 L6 16 Z" fill="currentColor" stroke="currentColor" strokeLinejoin="round" />
-            )}
-        </svg>
-    );
-}
-
-function NextBtn({nextTrack}){
-    return(
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" className="cursor-pointer size-6 text-zinc-400 hover:text-white transition" alt="Next song" onClick={nextTrack}>
-            <path d="M4 4 L12 10 L4 16 Z" fill="currentColor" stroke="currentColor" strokeLinejoin="round" />
-            <rect x="13" y="4" width="2" height="12" fill="currentColor" />
-        </svg>
     );
 }
