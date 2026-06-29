@@ -188,7 +188,7 @@ function VolumeBar({audioRef}){
     };
 
     return(
-        <div className="relative z-20" onMouseEnter={() => setOver(true)} onMouseLeave={() => setOver(false)}>
+        <div className="relative z-20 hidden md:block" onMouseEnter={() => setOver(true)} onMouseLeave={() => setOver(false)}>
             {over &&
                 <div className="h-35 pb-8 bottom-0 w-full absolute z-30">
                     <div className="border-zinc-800 border bg-zinc-900 w-full h-full rounded-md p-2">
